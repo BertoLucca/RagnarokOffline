@@ -1,0 +1,3 @@
+[submodule "rathena"]
+	path = rathena
+	url = https://github.com/BertoLucca/rathena.git

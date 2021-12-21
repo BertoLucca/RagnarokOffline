@@ -1,0 +1,1 @@
+Expand-Archive "./mariadb.zip" -Destination '.'
