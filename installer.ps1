@@ -33,5 +33,34 @@ Write-Host "Main sql has been applied.";
 Get-Content "./$rathena/logs.sql" | & ./$sqldir/mysql.exe -u $username --password=$password rAthena_log;
 Write-Host "Log sql has been applied.";
 
+Write-Host "==================================================================="
+$exclude = @("*_re*", "main.sql", "logs.sql");
+$main_files = Get-ChildItem "./$rathena/*.sql" -Exclude $exclude;
+Write-Host "$($main_files.Length) file(s) will be applied.";
+$index = 1;
+foreach ($file in $main_files) {
+    Get-Content $file | & ./$sqldir/mysql.exe -u $username --password=$password rAthena;
+    Write-Host "($index of $($main_files.Length))" -NoNewLine -BackgroundColor DarkMagenta
+    Write-Host " - File ``$($file.Name)`` has been applied."
+    $index++;
+}
+
+$upgrade_files = Get-ChildItem "./$rathena/upgrades/*.sql";
+if ($upgrade_files.Length -gt 0) {
+    Write-Host "$($upgrade_files.Length) upgrade file(s) will be applied.";
+}
+$index = 1;
+foreach ($file in $upgrade_files) {
+    if ($file.Name -like "*_logs.sql") {
+        $db = "rAthena_log";
+    } else {
+        $db = "rAthena";
+    }
+    Get-Content $file | & ./$sqldir/mysql.exe -u $username --password=$password -f -D $db;
+    Write-Host "($index of $($upgrade_files.Length))" -NoNewLine -BackgroundColor DarkMagenta
+    Write-Host " - File ``$($file.Name)`` has been applied."
+    $index++;
+}
+
 # close server connection
 $server.kill();
