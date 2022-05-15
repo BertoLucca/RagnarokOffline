@@ -1,1 +1,3 @@
-Remove-Item './build' -Force
+if (Test-Path -Path './build') {
+    Remove-Item './build/*' -Recurse -Force -Confirm:$false
+}
