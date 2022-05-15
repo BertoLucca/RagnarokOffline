@@ -2,3 +2,6 @@
 	path = rathena
 	url = https://github.com/BertoLucca/rathena.git
 	branch = offline-branch
+[submodule "ROenglishRE"]
+	path = ROenglishRE
+	url = https://github.com/BertoLucca/ROenglishRE.git
