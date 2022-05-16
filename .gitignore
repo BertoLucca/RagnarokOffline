@@ -1,6 +1,10 @@
 /build
 
-/3rdparty/*
-!/3rdparty/*.zip
+/3rdparty/client/*
+!/3rdparty/client/cleanup
+!/3rdparty/client/clientinfo.xml
 
+/dev/*
+!/dev/Ragexe.exe
+!/dev/NEMO.zip
 /guides
