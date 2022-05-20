@@ -10,11 +10,11 @@
             <version>55</version>
             <langtype>0</langtype>
       </connection>
-   <connection>
+   <!--connection>
       <display>OpenKore</display>
             <address>127.0.0.1</address>
             <port>6901</port>
             <version>55</version>
             <langtype>0</langtype>
-      </connection>
+      </connection-->
 </clientinfo>
