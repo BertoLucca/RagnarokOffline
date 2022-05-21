@@ -1,6 +1,7 @@
 param (
     #when using this flag, you must add MSBuild.exe to your path
-    [Switch] $recompile = $false 
+    [Switch] $recompile = $false,
+    [Switch] $rebuildServer = $false
 )
 
 $onError = {
@@ -41,7 +42,7 @@ $build = "$dir/build";
 $3rd = "$dir/3rdparty";
 $translation = "$dir/ROenglishRE";
 
-if ($recompile) {
+if ($recompile -or $rebuildServer) {
 # Compile Server
 Set-Location $rathena;
 MSBuild.exe -m;
@@ -49,12 +50,15 @@ Set-Location $dir;
 }
 
 # Copy compiled files to server folder
-if (-Not (Test-Path "$build/server")) {
-    New-Item -Path $build -Name "server" -ItemType "directory" | Out-Null;
-    New-Item -Path "$build/server" -Name "conf" -ItemType "directory" | Out-Null;
-    New-Item -Path "$build/server" -Name "db" -ItemType "directory" | Out-Null;
-    New-Item -Path "$build/server" -Name "npc" -ItemType "directory" | Out-Null;
+if (Test-Path "$build/server") {
+    # remove previous instalation
+    Remove-Item -Path "$build/server" -Recurse -Force;
 }
+
+New-Item -Path $build -Name "server" -ItemType "directory" | Out-Null;
+New-Item -Path "$build/server" -Name "conf" -ItemType "directory" | Out-Null;
+New-Item -Path "$build/server" -Name "db" -ItemType "directory" | Out-Null;
+New-Item -Path "$build/server" -Name "npc" -ItemType "directory" | Out-Null;
 
 Write-Bar "Starting server files copy...";
 $i = 0;
@@ -117,6 +121,11 @@ ForEach-Object {
 };
 Write-Log "NPC files have been copied.";
 Write-Log "Server files have been copied successfully.";
+
+if ($rebuildServer) {
+    Copy-Item -Path "$build/client/msvcr110.dll" -Destination "$build/server";
+    return;
+}
 
 # unzip the sql client
 Expand-Archive "$3rd/mariadb.zip" -Destination $build;
