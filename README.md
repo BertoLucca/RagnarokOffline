@@ -21,3 +21,8 @@ After the server has been initialized, start **client/Ragexe.exe**.
 
 A default account, namely `adminacc`, with password `password` is pre-built in
 this application database, you can log into it and play.
+
+# Toubleshooting
+
+In case your installer throws an error about powershell's signature, run
+powershell as admin and execute the command `Set-ExecutionPolicy RemoteSigned`.
