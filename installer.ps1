@@ -1,3 +1,8 @@
+param (
+    #when using this flag, you must add MSBuild.exe to your path
+    [Switch] $recompile = $false 
+)
+
 $onError = {
     $server.kill();
     exit;
@@ -36,10 +41,12 @@ $build = "$dir/build";
 $3rd = "$dir/3rdparty";
 $translation = "$dir/ROenglishRE";
 
+if ($recompile) {
 # Compile Server
 Set-Location $rathena;
 MSBuild.exe -m;
 Set-Location $dir;
+}
 
 # Copy compiled files to server folder
 if (-Not (Test-Path "$build/server")) {
