@@ -42,11 +42,11 @@ $build = "$dir/build";
 $3rd = "$dir/3rdparty";
 $translation = "$dir/ROenglishRE";
 
-if ($recompile -or $rebuildServer) {
 # Compile Server
-Set-Location $rathena;
-MSBuild.exe -m;
-Set-Location $dir;
+if ($recompile -or $rebuildServer) {
+    Set-Location $rathena;
+    MSBuild.exe -m;
+    Set-Location $dir;
 }
 
 # Copy compiled files to server folder
@@ -128,9 +128,11 @@ if ($rebuildServer) {
 }
 
 # unzip the sql client
+Write-Bar "Deploying database..."
 Expand-Archive "$3rd/mariadb.zip" -Destination $build;
+Remove-Item "$build/mysqld-helper.txt";
 # Install db
-Write-Bar "Starting database instalation...";
+Write-Log "Starting database instalation...";
 try {
     & $sqldir/mysql_install_db.exe;
 } catch {
@@ -201,8 +203,7 @@ Write-Log "Ragnarok Client has been unpacked.";
 Write-Bar "Initializing translation...";
 $i = 0;
 Write-ProgressBar "Copying translation files..." 0;
-($items = Get-ChildItem "$translation/Renewal" -Recurse ) | 
-ForEach-Object {
+($items = Get-ChildItem "$translation/Renewal" -Recurse ) | ForEach-Object {
     $i = $i + 100;
 
     if ($_ -is [System.IO.DirectoryInfo]) {
@@ -243,5 +244,9 @@ Copy-Item "$3rd/ConEmu.xml" -Destination "$build/console";
 Write-Log "'ConEmu' default theme has been copied.";
 
 Copy-Item "$dir/dev/run-server.bat" -Destination "$build" -Force;
+$shortcut = (New-Object -comObject WScript.Shell).CreateShortcut("$build/Ragnarok.lnk");
+$shortcut.TargetPath = "$build/client/Ragexe.exe";
+$shortcut.WorkingDirectory = "$build/client";
+$shortcut.Save();
 
 Write-Bar "The instalation has been finished."
