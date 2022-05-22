@@ -34,6 +34,26 @@ function Write-ProgressBar {
         -PercentComplete $percent;
 }
 
+function Copy-ServerFiles {
+    param ($src, $message)
+
+    $i = 0;
+    Write-ProgressBar $message 0;
+    ($items = Get-ChildItem "$rathena/$src" -Recurse ) |
+    ForEach-Object {
+    $i = $i + 100;
+    if ($_ -is [System.IO.DirectoryInfo]) {
+        $relPath = $($_.Parent.FullName.Substring("$rathena".Length));
+        New-Item -Path "$build/server/$relpath" -Name $_.Name -ItemType "directory" | 
+            Out-Null;
+    } else {
+        $relPath = $($_.Directory.FullName.Substring("$rathena".Length));
+        Copy-Item -Path $_.FullName -Destination "$build/server/$relPath";
+        Write-ProgressBar $message  $($i/($items.Length));
+    }
+};
+}
+
 # Define path aliases
 $dir = Split-Path ($MyInvocation.MyCommand.Path)
 $sqldir = "$dir/build/mariadb/bin";
@@ -70,56 +90,15 @@ Write-ProgressBar "Copying CORE files..." 0;
 };
 Write-Log "CORE files have been copied.";
 
-$i = 0;
-Write-ProgressBar "Copying CONF files..." 0;
-($items = Get-ChildItem "$rathena/conf" -Recurse ) | 
-ForEach-Object {
-    $i = $i + 100;
-    if ($_ -is [System.IO.DirectoryInfo]) {
-        $relPath = $($_.Parent.FullName.Substring("$rathena".Length));
-        New-Item -Path "$build/server/$relpath" -Name $_.Name -ItemType "directory" | 
-            Out-Null;
-    } else {
-        $relPath = $($_.Directory.FullName.Substring("$rathena".Length));
-        Copy-Item -Path $_.FullName -Destination "$build/server/$relPath";
-        Write-ProgressBar "Copying CONF files..."  $($i/($items.Length));
-    }
-};
+Copy-ServerFiles "conf" "Copying CONF files...";
 Write-Log "CONF files have been copied.";
 
-$i = 0;
-Write-ProgressBar "Copying DATABASE files..." 0;
-($items = Get-ChildItem "$rathena/db" -Recurse ) |
-ForEach-Object {
-    $i = $i + 100;
-    if ($_ -is [System.IO.DirectoryInfo]) {
-        $relPath = $($_.Parent.FullName.Substring("$rathena".Length));
-        New-Item -Path "$build/server/$relpath" -Name $_.Name -ItemType "directory" | 
-            Out-Null;
-    } else {
-        $relPath = $($_.Directory.FullName.Substring("$rathena".Length));
-        Copy-Item -Path $_.FullName -Destination "$build/server/$relPath";
-        Write-ProgressBar "Copying DATABASE files..."  $($i/($items.Length));
-    }
-};
+Copy-ServerFiles "db" "Copying DATABASE files...";
 Write-Log "DATABASE files have been copied.";
 
-$i = 0;
-Write-ProgressBar "Copying NPC files..." 0;
-($items = Get-ChildItem "$rathena/npc" -Recurse ) |
-ForEach-Object {
-    $i = $i + 100;
-    if ($_ -is [System.IO.DirectoryInfo]) {
-        $relPath = $($_.Parent.FullName.Substring("$rathena".Length));
-        New-Item -Path "$build/server/$relpath" -Name $_.Name -ItemType "directory" | 
-            Out-Null;
-    } else {
-        $relPath = $($_.Directory.FullName.Substring("$rathena".Length));
-        Copy-Item -Path $_.FullName -Destination "$build/server/$relPath";
-        Write-ProgressBar "Copying NPC files..."  $($i/($items.Length));
-    }
-};
+Copy-ServerFiles "npc" "Copying NPC files...";
 Write-Log "NPC files have been copied.";
+
 Write-Log "Server files have been copied successfully.";
 
 if ($rebuildServer) {
