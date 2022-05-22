@@ -12,8 +12,8 @@ $onError = {
 function Write-Log {
     param ($message)
 
-    Write-Host "[$(Get-Date -UFormat "%Y-%m-%d %T")]:" -NoNewLine -BackgroundColor DarkMagenta;
-    Write-Host " $message";
+    Write-Host "[$(Get-Date -UFormat "%Y-%m-%d %T")]" -NoNewLine -BackgroundColor DarkMagenta;
+    Write-Host ": $message";
 }
 
 function Write-Bar { 
@@ -70,9 +70,12 @@ if ($recompile -or $rebuildServer) {
 }
 
 # Copy compiled files to server folder
+Write-Log "Initializing server configuration.";
 if (Test-Path "$build/server") {
     # remove previous instalation
+    Write-Log "Removing previous server installation...";
     Remove-Item -Path "$build/server" -Recurse -Force;
+    Write-Log "Removal has been completed";
 }
 
 New-Item -Path $build -Name "server" -ItemType "directory" | Out-Null;
