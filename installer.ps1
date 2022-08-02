@@ -19,7 +19,7 @@ function Write-ProgressBar {
     Write-Progress -Activity $message -Status "Progress -> " -PercentComplete $percent;
 }
 function Copy-ServerFiles {
-    param ($src, $message);
+    param ($src, $message, $dest);
     $i = 0;
     Write-ProgressBar $message 0;
     ($items = Get-ChildItem "$rathena/$src" -Recurse ) | ForEach-Object {
@@ -28,10 +28,10 @@ function Copy-ServerFiles {
             $relPath = $($_.Parent.FullName.Substring("$rathena".Length));
             New-Item -Path "$build/server/$relpath" -Name $_.Name -ItemType "directory" | Out-Null; 
         } else {
-            $relPath = $($_.Directory.FullName.Substring("$rathena".Length));
+            $relPath = $(If($null -eq $dest) {$_.Directory.FullName.Substring("$rathena".Length)});
             Copy-Item -Path $_.FullName -Destination "$build/server/$relPath";
-            Write-ProgressBar $message  $($i/($items.Length));
         }
+        Write-ProgressBar $message  $($i/($items.Length));
     };
 }
 
@@ -62,7 +62,7 @@ if (Test-Path "$build/server") {
     New-Item -Path "$build/server" -Name "db" -ItemType "directory" | Out-Null;
     New-Item -Path "$build/server" -Name "npc" -ItemType "directory" | Out-Null;
     Write-Log "Starting server files copy.";
-    Copy-ServerFiles "build" "Copying CORE files.";
+    Copy-ServerFiles "build" "Copying CORE files." '';
     Write-Log "CORE files have been copied.";
     Copy-ServerFiles "conf" "Copying CONF files.";
     Write-Log "CONF files have been copied.";
@@ -77,7 +77,7 @@ if (Test-Path "$build/server") {
     Write-Log "'ConEmu' has been unpacked.";
     Copy-Item "$3rd/ConEmu.xml" -Destination "$build/server/console";
     Write-Log "'ConEmu' default theme has been copied.";
-    #Copy Server runner
+    # Copy Server runner
     Copy-Item "$dir/dev/run-server.bat" -Destination "$build" -Force;
     if ($rebuildServer) {
         Copy-Item -Path "$build/client/msvcr110.dll" -Destination "$build/server";
@@ -116,7 +116,7 @@ if (Test-Path "$build/mariadb") {
     Write-Log "User has been created.";
     Write-Log "Querying script files.";
     $main_files = Get-ChildItem "$rathena/sql-files/*.sql";
-    $total = $main_files.Length + 1
+    $total = $main_files.Length + 1;
     Write-Log "$total found file(s) will be applied.";
     $index = 1;
     foreach ($file in $main_files) {
@@ -147,10 +147,6 @@ if (Test-Path "$build/client") {
         if ($_ -is [System.IO.DirectoryInfo]) {
             $relPath = $($_.Parent.FullName.Substring("$translation/Renewal".Length));
             if (Test-Path "$build/client/$relpath/$($_.Name)") { return; }
-            New-Item -Path "$build/client/$relpath" -Name $_.Name -ItemType "directory" | 
-        New-Item -Path "$build/client/$relpath" -Name $_.Name -ItemType "directory" | 
-            New-Item -Path "$build/client/$relpath" -Name $_.Name -ItemType "directory" | 
-        New-Item -Path "$build/client/$relpath" -Name $_.Name -ItemType "directory" | 
             New-Item -Path "$build/client/$relpath" -Name $_.Name -ItemType "directory" | 
                 Out-Null;
         } else {
