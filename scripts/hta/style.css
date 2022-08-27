@@ -1,0 +1,94 @@
+body {
+    background-image: url("./bg.jpg");
+    background-position: center top;
+    background-size: calc(1200px * 5/9) 500px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-family: Calibri;
+    overflow: hidden;
+}
+
+.template {
+    display: none;
+}
+
+.logo {
+    display: block;
+    margin-left: 102px;
+    margin-bottom: 20px;
+    mix-blend-mode: color-burn;
+}
+
+button:hover, #main-actions-container :hover {
+    cursor: pointer;
+}
+
+#main-actions-container div {
+    width: 60px;
+    border-radius: 31px;
+    border: 2px solid black;
+    padding: 1px;
+}
+
+#main-actions-container * button {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    border: 3px solid black;
+    background-color: cornflowerblue;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    opacity: inherit !important;
+}
+
+#main-actions-container :nth-child(2) button {
+    font-size: 40px;
+    line-height: 100%;
+    vertical-align: middle;
+}
+
+table {
+    border-spacing:0 5px;
+    width: 100%;
+}
+
+tr {
+    background-color: lightblue/*#faebd7*/;
+    border: 3px cornflowerblue outset;
+    margin-bottom: 10px;
+    text-align: left;
+    display: inline-block;
+}
+
+.label button {
+    float: left;
+    width: 100%;
+}
+
+.label td {
+    border: 3px cornflowerblue outset;
+}
+
+.label td:first-child {
+    border-right: none;
+}
+
+.label td:last-child {
+    border-left: none;
+    padding-left: 30px;
+    padding-right: 10px;
+    display: inline-block;
+    margin-right: 0px;
+    vertical-align: middle;
+    width: 100%;
+}
+
+#main-actions-container :not(:hover),
+#sub-actions-container:not(:hover) {
+    --opacity: 0.3;
+}
+
+#main-actions-container * {
+    display: inline-block;
+}

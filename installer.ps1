@@ -78,11 +78,12 @@ if (Test-Path "$build/server") {
     Copy-Item "$3rd/ConEmu.xml" -Destination "$build/server/console";
     Write-Log "'ConEmu' default theme has been copied.";
     # Copy Server runner
-    Copy-Item "$dir/dev/run-server.bat" -Destination "$build" -Force;
     if ($rebuildServer) {
         Copy-Item -Path "$build/client/msvcr110.dll" -Destination "$build/server";
         exit;
     }
+    # Copy misc files
+    Copy-Item "$dir/scripts/hta" -Destination "$build" -Force -Recurse;
 }
 
 if (Test-Path "$build/mariadb") {
@@ -171,8 +172,9 @@ if (Test-Path "$build/client") {
     Copy-Item "$dir/dev/Ragexe.exe" -Destination "$build/client" -Force;
     Copy-Item "$3rd/client/clientinfo.xml" -Destination "$build/client/data" -Recurse -Force;
     $shortcut = (New-Object -comObject WScript.Shell).CreateShortcut("$build/Ragnarok.lnk");
-    $shortcut.TargetPath = "$build/client/Ragexe.exe";
-    $shortcut.WorkingDirectory = "$build/client";
+    $shortcut.TargetPath = "$build/hta/main.hta";
+    $shortcut.WorkingDirectory = "$build/hta";
+    $shortcut.IconLocation = "$build/client/ragnarok.ico";
     $shortcut.Save();
 }
 
