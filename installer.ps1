@@ -138,6 +138,10 @@ if (Test-Path "$build/client") {
     Expand-Archive "$3rd/client/kRO_FullClient_20210406.zip" -Destination $build;
     Copy-Item -Path "$build/client/msvcr110.dll" -Destination "$build/server";
     Write-Log "Ragnarok Client has been unpacked.";
+    # Add OpenSetup
+    Write-Log "Adding 'OpenSetup'.";
+    Expand-Archive "$3rd/OpenSetup.zip" -Destination "$build/client";
+    Write-Log "Added 'OpenSetup'.";
     # Apply translation
     Write-Log "Applying translation.";
     $i = 0;
@@ -174,6 +178,8 @@ if (Test-Path "$build/client") {
     $shortcut.TargetPath = "$build/client/Ragexe.exe";
     $shortcut.WorkingDirectory = "$build/client";
     $shortcut.Save();
+    # Misc
+    Rename-Item -Path "$build/client/opensetup.exe" -NewName "setup.exe";
 }
 
 Write-Bar "The instalation has been finished."
