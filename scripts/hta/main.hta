@@ -28,6 +28,8 @@
 </script>
 <script type="text/javascript">
     window.onload = function() {
+        var player = document.getElementById("player");
+        player.volume = 0.02;
         window.resizeTo(650, 500)
         var template = document.querySelector("#tmpl-1 tr");
         var to_replace = document.getElementsByName("replace-tmpl-1");
@@ -41,6 +43,17 @@
             node.parentNode.replaceChild(clone, node);
         }
     }
+
+    function toggle_music() {
+        var btn = document.getElementById("sound-controler");
+        if (player.paused) {
+            player.play();
+            btn.innerHTML = "&#9654;";
+        } else {
+            player.pause();
+            btn.innerHTML = "&#9208;";
+        }
+    }
 </script>
 <table id="tmpl-1" class="template">
     <tr class="label">
@@ -49,24 +62,25 @@
     </tr>
 </table>
 <body>
-    <bgsound src="../client/BGM/08.mp3" loop="infinite" volume="-3500">
+    <audio id="player" src="../client/BGM/08.mp3" autoplay loop></audio>
+    <button id="sound-controler" class="radio-button sound-button" onclick="toggle_music()">&#9654;</button>
     <img src="./logo.png" class="logo"></img>
     <div id="main-actions-container">
-        <div><button onclick="run_exe('Ragexe')">PLAY</button></div>
-        <div><button onclick="run_exe('setup')">&#9881;</button></div>
+        <div><div class="outer-radio"><button class="radio-button" onclick="run_exe('Ragexe')">PLAY</button></div></div>
+        <div><div class="outer-radio"><button class="radio-button" onclick="run_exe('setup')">&#9881;</button></div></div>
     </div>
     <table id="sub-actions-container">
-        <input
-            name="replace-tmpl-1"
-            onclick="run_('db')"
-            message="Database"
-            description="Run database only."
-        >
         <input
             name="replace-tmpl-1"
             onclick="run_('server')"
             message="Server"
             description="Run the entire Server."
+        >
+        <input
+            name="replace-tmpl-1"
+            onclick="run_('db')"
+            message="Database"
+            description="Run database only."
         >
         <input
             name="replace-tmpl-1"

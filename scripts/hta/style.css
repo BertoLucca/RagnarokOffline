@@ -23,23 +23,39 @@ button:hover, #main-actions-container :hover {
     cursor: pointer;
 }
 
-#main-actions-container div {
+.outer-radio {
     width: 60px;
     border-radius: 31px;
-    border: 2px solid black;
+    border: 2px solid midnightblue;
     padding: 1px;
+    margin: 10px;
 }
 
-#main-actions-container * button {
+#main-actions-container div:first-child {
+    margin-left: calc(50% - 55px);
+}
+
+.radio-button {
     width: 60px;
     height: 60px;
     border-radius: 30px;
-    border: 3px solid black;
+    border: 3px solid midnightblue;
     background-color: cornflowerblue;
     text-align: center;
     font-weight: bold;
     color: white;
     opacity: inherit !important;
+    padding: 0;
+}
+
+.sound-button {
+    width: 25px;
+    height: 25px;
+    border-radius: 12px;
+    text-align: center;
+    float: right;
+    font-size: 12px;
+    color: midnightblue;
 }
 
 #main-actions-container :nth-child(2) button {
@@ -49,7 +65,7 @@ button:hover, #main-actions-container :hover {
 }
 
 table {
-    border-spacing:0 5px;
+    border-spacing:0 15px;
     width: 100%;
 }
 
@@ -82,11 +98,6 @@ tr {
     margin-right: 0px;
     vertical-align: middle;
     width: 100%;
-}
-
-#main-actions-container :not(:hover),
-#sub-actions-container:not(:hover) {
-    --opacity: 0.3;
 }
 
 #main-actions-container * {
