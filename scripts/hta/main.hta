@@ -17,15 +17,13 @@
     Sub run_(script)
         Dim shell, path
         Set shell = CreateObject("WScript.Shell")
-        path = Mid(window.location, 1, Len(window.location) - 8)
-        shell.Run path + "run-" + script + ".bat & exit"
+        shell.Run "run-" + script + ".bat"
     End Sub
 
-    Sub run_rag()
+    Sub run_exe(exename)
         Dim shell, path
         Set shell = CreateObject("WScript.Shell")
-        path = Mid(window.location, 1, Len(window.location) - 12)
-        shell.Run "cmd /k ""cd ../client & start Ragexe.exe"""
+        shell.Run "cmd /k ""cd ../client & start " + exename + ".exe & exit""", 0, true
     End Sub
 </script>
 <script type="text/javascript">
@@ -54,8 +52,8 @@
     <bgsound src="../client/BGM/08.mp3" loop="infinite" volume="-3500">
     <img src="./logo.png" class="logo"></img>
     <div id="main-actions-container">
-        <div><button onclick="run_rag()">PLAY</button></div>
-        <div><button >&#9881;</button></div>
+        <div><button onclick="run_exe('Ragexe')">PLAY</button></div>
+        <div><button onclick="run_exe('setup')">&#9881;</button></div>
     </div>
     <table id="sub-actions-container">
         <input
