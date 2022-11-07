@@ -18,22 +18,6 @@ function Write-ProgressBar {
     param ($message, $percent);
     Write-Progress -Activity $message -Status "Progress -> " -PercentComplete $percent;
 }
-function Copy-ServerFiles {
-    param ($src, $message, $dest);
-    $i = 0;
-    Write-ProgressBar $message 0;
-    ($items = Get-ChildItem "$rathena/$src" -Recurse ) | ForEach-Object {
-        $i = $i + 100;
-        if ($_ -is [System.IO.DirectoryInfo]) {
-            $relPath = $($_.Parent.FullName.Substring("$rathena".Length));
-            New-Item -Path "$build/server/$relpath" -Name $_.Name -ItemType "directory" | Out-Null; 
-        } else {
-            $relPath = $(If($null -eq $dest) {$_.Directory.FullName.Substring("$rathena".Length)});
-            Copy-Item -Path $_.FullName -Destination "$build/server/$relPath";
-        }
-        Write-ProgressBar $message  $($i/($items.Length));
-    };
-}
 
 ################################################################################
 ############################### Script Start ###################################
@@ -58,30 +42,29 @@ if (Test-Path "$build/server") {
     # Create destination folders
     Write-Bar "Initializing 'Server configuration' step.";
     New-Item -Path $build -Name "server" -ItemType "directory" | Out-Null;
-    New-Item -Path "$build/server" -Name "conf" -ItemType "directory" | Out-Null;
-    New-Item -Path "$build/server" -Name "db" -ItemType "directory" | Out-Null;
-    New-Item -Path "$build/server" -Name "npc" -ItemType "directory" | Out-Null;
+    $i = 0;
     Write-Log "Starting server files copy.";
-    Copy-ServerFiles "build" "Copying CORE files." '';
-    Write-Log "CORE files have been copied.";
-    Copy-ServerFiles "conf" "Copying CONF files.";
-    Write-Log "CONF files have been copied.";
-    Copy-ServerFiles "db" "Copying DATABASE files.";
-    Write-Log "DATABASE files have been copied.";
-    Copy-ServerFiles "npc" "Copying NPC files.";
-    Write-Log "NPC files have been copied.";
+    Write-ProgressBar "Copying server files..." 0;
+    ($server_items = Get-ChildItem -Path "$rathena/build") | ForEach-Object {
+        $i = $i + 100;
+        Copy-Item -Path $_.FullName -Destination "$build/server" -Recurse -Container;
+        Write-ProgressBar "Copying server files..." $($i/($server_items.Length));
+    }
     Write-Log "Server files have been copied successfully.";
+
     # Expand ConEmu for handy console display
     Write-Log "Unpacking 'ConEmu'.";
     Expand-Archive "$3rd/ConEmu.zip" -DestinationPath "$build/server/console";
     Write-Log "'ConEmu' has been unpacked.";
     Copy-Item "$3rd/ConEmu.xml" -Destination "$build/server/console";
     Write-Log "'ConEmu' default theme has been copied.";
+
     # Copy Server runner
     if ($rebuildServer) {
         Copy-Item -Path "$build/client/msvcr110.dll" -Destination "$build/server";
         exit;
     }
+
     # Copy misc files
     Copy-Item "$dir/scripts/hta" -Destination "$build" -Force -Recurse;
 }

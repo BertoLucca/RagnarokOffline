@@ -1,7 +1,7 @@
 [submodule "rathena"]
 	path = rathena
 	url = https://github.com/BertoLucca/rathena.git
-	branch = offline-branch
+	branch = stable
 [submodule "ROenglishRE"]
 	path = ROenglishRE
 	url = https://github.com/BertoLucca/ROenglishRE.git
