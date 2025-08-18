@@ -1,3 +1,5 @@
+**/.vs
+
 /3rdparty/client/*
 !/3rdparty/client/cleanup
 !/3rdparty/client/clientinfo.xml
