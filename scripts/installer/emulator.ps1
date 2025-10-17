@@ -1,8 +1,9 @@
 $serverExists = Test-Path "$build/server";
 
-if ($serverExists -and -not ($RecompileEmulator -or $RebuildServer)) {
-    Write-Bar "Server instalation already found. Skipping 'Server configuration' step.";
-} else {
+if ($RecompileEmulator -or $RebuildServer -or -not $serverExists) {
+    if (-not $serverExists) {
+        New-item "$build/server" -ItemType Directory;
+    }
     # Cleanup
     Remove-Item -Path "$build/server" -Force -Recurse -Verbose;
 
@@ -43,4 +44,6 @@ if ($serverExists -and -not ($RecompileEmulator -or $RebuildServer)) {
 
     # Copy misc files
     Copy-Item "$dir/scripts/hta" -Destination "$build" -Force -Recurse;
+} else {
+    Write-Bar "Server instalation already found. Skipping 'Server configuration' step.";
 }

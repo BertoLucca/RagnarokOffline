@@ -32,9 +32,9 @@ if (-not (Test-Path -Path $build)) {
     New-Item -ItemType Directory -Path $dir -Name "build" | Out-Null;
 }
 
+. "$sources/installer/client.ps1";
 . "$sources/installer/emulator.ps1";
 . "$sources/installer/database.ps1";
-. "$sources/installer/client.ps1";
 
 Write-Bar "The instalation has been finished."
 $runTime = New-TimeSpan -Start $startTime -End (Get-Date);
